@@ -326,6 +326,10 @@ func makeMounts(pod *v1.Pod, podDir string, container *v1.Container, hostName, h
 				// when the pod specifies an fsGroup, and if the directory is not created here, Docker will
 				// later auto-create it with the incorrect mode 0750
 				// Make extra care not to escape the volume!
+				if volumevalidation.ValidateVolumeIsConfigMap(pod, mount) {
+					klog.ErrorS(nil, "SubPath not exsit in configMap", "containerName", container.Name, "subPathName", subPath, "configMapName", mount.Name)
+					return nil, cleanupAction, fmt.Errorf("subPath %q not exist in configMap %q", subPath, mount.Name)
+				}
 				perm, err := hu.GetMode(volumePath)
 				if err != nil {
 					return nil, cleanupAction, err
