@@ -71,10 +71,9 @@ func ValidatePathNoBacksteps(targetPath string) error {
 	return nil
 }
 
-func ValidateVolumeIsConfigMap(pod *v1.Pod, mount v1.VolumeMount) bool {
-	name := mount.Name
-	for _, volume := range pod.Spec.Volumes {
-		if volume.Name == name && volume.ConfigMap != nil {
+func ValidateVolumeIsConfigMap(volumes []v1.Volume, mountName string) bool {
+	for _, volume := range volumes {
+		if volume.Name == mountName && volume.ConfigMap != nil {
 			return true
 		}
 	}
